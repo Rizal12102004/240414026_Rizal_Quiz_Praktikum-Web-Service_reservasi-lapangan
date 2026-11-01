@@ -12,6 +12,7 @@ export class BookingsService {
 
   // Membuat reservasi baru
   createBooking(data: any) {
+  console.log('DATA DARI POSTMAN:', data);
 
     const {
       userId,
@@ -37,13 +38,26 @@ export class BookingsService {
     }
 
     // Memeriksa format tanggal
-    if (
-      typeof date !== 'string' ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
-      new Date(`${date}T00:00:00`).toISOString().slice(0, 10) !== date
-    ) {
-      throw new BadRequestException('Format tanggal tidak valid');
-    }
+const dateParts = typeof date === 'string'
+  ? date.split('-').map(Number)
+  : [];
+
+const [year, month, day] = dateParts;
+
+const validDate =
+  dateParts.length === 3 &&
+  /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+  Number.isInteger(year) &&
+  Number.isInteger(month) &&
+  Number.isInteger(day) &&
+  month >= 1 &&
+  month <= 12 &&
+  day >= 1 &&
+  day <= new Date(year, month, 0).getDate();
+
+if (!validDate) {
+  throw new BadRequestException('Format tanggal tidak valid');
+}
 
     // Memeriksa format jam
     const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;

@@ -1,1 +1,14 @@
-node_modules
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+
+# Environment
+.env
+
+# Logs
+*.log
+
+# Testing
+/coveragenode_modules
